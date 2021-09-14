@@ -52,11 +52,8 @@ class indexController extends Controller
 
      public function post_login(Request $request)
      {
-        $user = [
-            'username' => $request['username'],
-            'password' => trim($request['password']),
-        ];
-        if(Auth::attempt($user)) {
+        
+        if(Auth::attempt($this->_users->post_login())) {
             return redirect()->route('page.index');
         }else{
              return redirect()->back()->with(['err'=>'Đăng nhập không thành công']);

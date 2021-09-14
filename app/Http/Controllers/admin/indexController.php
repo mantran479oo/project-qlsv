@@ -3,12 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use Carbon\Carbon;
-use App\Models\Model_class;
-use App\Models\Model_users;
-use App\Models\Model_points;
 use Illuminate\Http\Request;
-use App\Models\Model_subjects;
-use App\Models\Model_informations;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\Repository\Interfaces\userRepositoryInterface;
@@ -75,7 +70,7 @@ class indexController extends Controller
      public function update(Request $request,$id)
      {
         $update_student = $this->_informations->find($id);
-        $update_user = Model_users::find($update_student->id_user);
+        $update_user = $this->_users->find($update_student->id_user);
         $update_user->password = Hash::make(date('d/m/Y', strtotime($request->date)));
         $update_user->save();
         $this->_informations->update($id,$this->_informations->set_update($request));

@@ -21,5 +21,11 @@ class userEloquentRepository extends EloquentRepository implements userRepositor
           $create = $this->create($value);
           return $create;
     }
+    public function post_login(){
+         return $user = [
+            'username' => $request['username'],
+            'password' => trim($request['password']),
+        ];
+    }
 }
 
