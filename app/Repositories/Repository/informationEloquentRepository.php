@@ -56,8 +56,7 @@ class InformationEloquentRepository extends EloquentRepository implements Inform
             'gender' => $request->gender,
             'address' => $request->address
         ];
-        $create_information = $this->create($value);
 
-        return $create_information;
+        return  $this->create($value);
     }
 }

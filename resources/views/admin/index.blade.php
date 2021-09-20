@@ -35,7 +35,7 @@
       </thead>
      
       <tbody>
-       @foreach($list_information as $details)
+       @foreach($listInformation as $details)
         @php
         $gender = $details->gender === $_GENDER_MALE ? 'Nam' :'Nữ'; 
         @endphp 
@@ -77,7 +77,7 @@
           <div class="col-sm-3 form-group">
             <label for="sel1">Lớp:</label>
             <select class="form-control" name="class_code" id="sel1">
-              @foreach($list_class as $class)
+              @foreach($listClass as $class)
               <option value="{{ $class->class_code }}">{{ $class->class_name }}</option>
               @endforeach
             </select>
@@ -136,7 +136,7 @@
                   @enderror
                 </div>
 </br>
-               @foreach($list_subject as $subjects)
+               @foreach($listSubject as $subjects)
                  <div class="form-group">
                 <label for="usr">{{ $subjects->subject_title}}:</label>
                 <input type="text" required class="form-control" name="{{ $subjects->subject_code }}" id="usr">
@@ -174,17 +174,17 @@
       <tr>
         <th>Họ tên</th>
         <th>Lớp</th>
-        @foreach($list_subject as $subject)
+        @foreach($listSubject as $subject)
          <th>{{$subject->subject_title}}</th> 
         @endforeach
       </tr>
     </thead>
     <tbody>
-      @foreach($list_information as $list_scores)
+      @foreach($listInformation as $listScores)
          <tr>
-            <td>{{$list_scores->name}}</td>
-            <td>{{$list_scores->articleClass->class_name}}</td>
-            @foreach ($list_scores->articlePoints as $score)
+            <td>{{$listScores->name}}</td>
+            <td>{{$listScores->articleClass->class_name}}</td>
+            @foreach ($listScores->articlePoints as $score)
                 <td>
                   <input id="score_{{$score->id}}" value="{{$score->number_point}}" class="score" onchange="edit('{{$score->id}}')" style="border:2px;width: 27px;" >
                 </td>

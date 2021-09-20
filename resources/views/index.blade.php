@@ -23,16 +23,16 @@
           <thead>
             <tr>
               <th>Họ và tên</th> 
-                @foreach ($list_subject as $subject)
+                @foreach ($listSubject as $subject)
                     <th>{{$subject->subject_title}}</th>
                 @endforeach
             </tr>
           </thead>
           <tbody>
             <tr>  
-              @foreach ($list_profile as $my_point)
+              @foreach ($listProfile as $myPoint)
               <td>{{$my_point->name}}</td>   
-               @foreach($my_point->articlePoints as $point)
+               @foreach($myPoint->articlePoints as $point)
                 <td>{{$point->number_point}}</td>   
                @endforeach
               @endforeach
@@ -63,12 +63,12 @@
          		<span>Quê quán</span>
          	</div>
          	<div class="col-sm-9">
-         @foreach ($list_profile as $my_profile)
-         		<span>{{ $my_profile->name }}</span><br>
-         		<span>{{ date('d/m/Y', strtotime($my_profile->date)) }}</span><br>
-         		<span>{{ $my_profile->olds }}</span><br>
-         		<span>{{ $my_profile->articleClass->class_name }}</span><br>
-         		<span>{{ $my_profile->address }}</span>
+         @foreach ($listProfile as $myProfile)
+         		<span>{{ $myProfile->name }}</span><br>
+         		<span>{{ date('d/m/Y', strtotime($myProfile->date)) }}</span><br>
+         		<span>{{ $myProfile->olds }}</span><br>
+         		<span>{{ $myProfile->articleClass->class_name }}</span><br>
+         		<span>{{ $myProfile->address }}</span>
          @endforeach
          	</div>
          </div>

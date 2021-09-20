@@ -9,7 +9,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateNewUser;
-use Illuminate\Support\Facades\Hash;
 use App\Repositories\Repository\Interfaces\UserRepositoryInterface;
 use App\Repositories\Repository\Interfaces\ClassRepositoryInterface;
 use App\Repositories\Repository\Interfaces\PointRepositoryInterface;
@@ -18,12 +17,34 @@ use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
 
 class indexController extends Controller
 {
+    /** 
+     * @var InformationEloquenRepository
+     */
     protected $_informations;
+
+    /** 
+     * @var PointEloquentRepository 
+     */
     protected $_points;
+
+    /**  
+     * @var SubjectEloquentRepository 
+     */
     protected $_subjects;
+
+    /**  
+     * @var UserEloquentRepository 
+     */
     protected $_users;
+
+    /**
+     * @var ClassEloquentRepository 
+     */
     protected $_class;
 
+    /**
+     * indexController constructor.
+     */
     public function __construct(
         InformationRepositoryInterface $InformationRepositoryInterface,
         UserRepositoryInterface $UserRepositoryInterface,
@@ -32,34 +53,33 @@ class indexController extends Controller
         PointRepositoryInterface $PointRepositoryInterface
     ) {
         $this->_informations = $InformationRepositoryInterface;
-        $this->_points = $PointRepositoryInterface;
-        $this->_users = $UserRepositoryInterface;
-        $this->_class = $ClassRepositoryInterface;
-        $this->_subjects = $SubjectRepositoryInterface;
+        $this->_points       = $PointRepositoryInterface;
+        $this->_users        = $UserRepositoryInterface;
+        $this->_class        = $ClassRepositoryInterface;
+        $this->_subjects     = $SubjectRepositoryInterface;
     }
 
     public function admin()
     {
-        $_GENDER_MALE = Constant::_GENDER_MALE;
-        $list_subject = $this->_subjects->getAll();
-        $list_class = $this->_class->getAll();
-        $list_information = $this->_informations->listInformation();
+        $_GENDER_MALE    = Constant::_GENDER_MALE;
+        $listSubject     = $this->_subjects->getAll();
+        $listClass       = $this->_class->getAll();
+        $listInformation = $this->_informations->listInformation();
 
-        return view('admin.index', compact('list_class', 'list_subject', 'list_information', '_GENDER_MALE'));
+        return view('admin.index', compact('listClass', 'listSubject', 'listInformation', '_GENDER_MALE'));
     }
 
     //Thêm thông tin và tài khoản sinh viên
     public function setAdd(CreateNewUser $request)
     {
         //Ramdom student_code
-        $pin = mt_rand(100, 9999)
-            . mt_rand(0, 99);
+        $pin  = mt_rand(100, 9999) . mt_rand(0, 99);
         $code = Carbon::now()->month . str_shuffle($pin);
         DB::beginTransaction();
         try {
             $point = $this->_points->postScore($request, (int) $code);
             $this->_points->insert($point);
-            $user = $this->_users->create($this->_users->postUser($request));
+            $user  = $this->_users->create($this->_users->postUser($request));
             $this->_informations->postInformation($request, (int) $user->id, (int)$code);
             DB::commit();
         } catch (Exception $e) {
@@ -98,11 +118,11 @@ class indexController extends Controller
      */
     public function setEdit(int $id)
     {
-        $edit_student = $this->_informations->myProfile($id);
-        $list_class = $this->_class->getAll();
-        $list_subject = $this->_subjects->getAll();
+        $editStudent = $this->_informations->myProfile($id);
+        $listClass   = $this->_class->getAll();
+        $listSubject = $this->_subjects->getAll();
 
-        return view('admin.edit', compact('edit_student', 'list_subject', 'list_class'));
+        return view('admin.edit', compact('editStudent', 'listSubject', 'listClass'));
     }
 
     /**

@@ -24,11 +24,11 @@ class CreateNewUser extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name'    => 'required',
             'address' => 'required',
-            'hobby' => 'required',
-            'date' => 'required',
-            'gender' => 'required',
+            'hobby'   => 'required',
+            'date'    => 'required|integer|between:0,10',
+            'gender'  => 'required',
         ];
     }
      /**
@@ -39,11 +39,13 @@ class CreateNewUser extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Tên không được để trống',
+            'name.required'    => 'Tên không được để trống',
             'address.required' => 'Địa chỉ không được để trống',
-            'hobby.required' => 'Sở thính không để trống',
-            'date.required' => 'Ngày sinh không để trống',
-            'gender.required' => 'Giới tính không để trống',
+            'date.integer'     => 'Yêu cầu nhập đúng số điểm',
+            'date.between'     => 'Số nhập điểm sai',
+            'hobby.required'   => 'Sở thính không để trống',
+            'date.required'    => 'Ngày sinh không để trống',
+            'gender.required'  => 'Giới tính không để trống',
         ];
     }
 }

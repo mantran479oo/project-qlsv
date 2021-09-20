@@ -10,13 +10,13 @@
 </head>
 <body>
 <div class="container">
-  @foreach($edit_student as $profile)
+  @foreach($editStudent as $profile)
   <form action="{{route('admin.update',['id' => $profile->id])}}" method="post">
   	@csrf   
   	 <div class="col-sm-3 form-group">
             <label for="sel1">Lớp:</label>
             <select class="form-control" name="class_code" id="sel1">
-               @foreach($list_class as $class)
+               @foreach($listClass as $class)
               <option @if($profile->class_code === $class->class_code) selected @endif value="{{ $class->class_code }}">{{$class->class_name}}</option>
               @endforeach 
             </select>

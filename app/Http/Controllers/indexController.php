@@ -14,12 +14,34 @@ use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
 
 class indexController extends Controller
 {
+  /** 
+   * @var InformationEloquenRepository
+   */
   protected $_informations;
+
+  /** 
+   * @var PointEloquentRepository 
+   */
   protected $_points;
+
+  /**  
+   * @var SubjectEloquentRepository 
+   */
   protected $_subjects;
+
+  /**  
+   * @var UserEloquentRepository 
+   */
   protected $_users;
+
+  /**
+   * @var ClassEloquentRepository 
+   */
   protected $_class;
 
+  /**
+   * indexController constructor.
+   */
   public function __construct(
     InformationRepositoryInterface $InformationRepositoryInterface,
     UserRepositoryInterface $UserRepositoryInterface,
@@ -28,19 +50,19 @@ class indexController extends Controller
     PointRepositoryInterface $PointRepositoryInterface
   ) {
     $this->_informations = $InformationRepositoryInterface;
-    $this->_points = $PointRepositoryInterface;
-    $this->_users = $UserRepositoryInterface;
-    $this->_class = $ClassRepositoryInterface;
-    $this->_subjects = $SubjectRepositoryInterface;
+    $this->_points       = $PointRepositoryInterface;
+    $this->_users        = $UserRepositoryInterface;
+    $this->_class        = $ClassRepositoryInterface;
+    $this->_subjects     = $SubjectRepositoryInterface;
   }
 
   //Hiện thị trang người dùng
   public function index()
   {
-    $list_profile = $this->_informations->myProfile((int)Auth::id());
-    $list_subject = $this->_subjects->getAll();
+    $listProfile = $this->_informations->myProfile((int)Auth::id());
+    $listSubject = $this->_subjects->getAll();
 
-    return view('index', compact('list_profile', 'list_subject'));
+    return view('index', compact('listProfile', 'listSubject'));
   }
 
   //Hiện thị trang login
