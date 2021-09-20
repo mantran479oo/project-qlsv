@@ -1,31 +1,43 @@
 <?php
+
 namespace App\Repositories\Repository;
-use App\Models\Model_users;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+
+use App\Models\User;
 use App\Repositories\Frames\EloquentRepository;
-use App\Repositories\Repository\Interfaces\userRepositoryInterface;
+use App\Repositories\Repository\Interfaces\UserRepositoryInterface;
 
 
-class userEloquentRepository extends EloquentRepository implements userRepositoryInterface
+class UserEloquentRepository extends EloquentRepository implements UserRepositoryInterface
 {
+    //Connection Model
     public function getModel()
     {
-        return Model_users::class;
+        return User::class;
     }
-    public function set_add($request){
-        $value = [
-            'username' => $request->username.'.'.$request->class,
-            'password' => Hash::make(date('d/m/Y', strtotime($request->date))),
-         ];
-          $create = $this->create($value);
-          return $create;
+
+    /**
+     * get product coverage
+     * @param mixed $request
+     * @return array
+     */
+    public function postUser($request)
+    {
+        return $value = [
+            'username' => $request->name . '.' . $request->class_code,
+            'password' => trim($request->date),
+        ];
     }
-    public function post_login(){
-         return $user = [
+
+    /**
+     * get product coverage
+     * @param mixed $request
+     * @return array
+     */
+    public function post_login($request)
+    {
+        return $user = [
             'username' => $request['username'],
             'password' => trim($request['password']),
         ];
     }
 }
-

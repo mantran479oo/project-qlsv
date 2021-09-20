@@ -1,15 +1,17 @@
 <?php
+
 namespace App\Repositories\Repository;
-use App\Models\Model_class;
+
+use App\Models\ClassRoom;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\Frames\EloquentRepository;
-use App\Repositories\Repository\Interfaces\classRepositoryInterface;
+use App\Repositories\Repository\Interfaces\ClassRepositoryInterface;
 
-class classEloquenRepository extends EloquentRepository implements classRepositoryInterface
+class ClassEloquenRepository extends EloquentRepository implements ClassRepositoryInterface
 {
+    //Connection Model 
     public function getModel()
     {
-        return Model_class::class;
+        return ClassRoom::class;
     }
 }
-

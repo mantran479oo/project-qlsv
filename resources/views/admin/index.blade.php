@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
   <title>Admin</title>
 </head>
 <body style="margin-top: 156px;">
@@ -34,28 +35,29 @@
       </thead>
      
       <tbody>
-        @foreach($list_user as $list_user)
+       @foreach($list_information as $details)
         @php
-        $gender = $list_user->gender === 1 ? 'Nam' :'Nữ'; 
-        @endphp
+        $gender = $details->gender === $_GENDER_MALE ? 'Nam' :'Nữ'; 
+        @endphp 
         <tr>
-          <td>{{ $list_user->student_code }}</td>
-          <td>{{ $list_user->name }}</td>
-          <td>{{  $gender }}</td>
-          <td>{{ $list_user->olds }}</td>
-          <td>{{date('d/m/Y', strtotime($list_user->date)) }}</td>
-          <td>{{ $list_user->class_name }}</td>
-          <td>{{ $list_user->hobby }}</td>
-          <td>{{ $list_user->address }}</td>
+          <td>{{$details->student_code}}</td>
+          <td>{{$details->name}}</td>
+          <td>{{$gender}}</td>
+          <td>{{$details->olds}}</td>
+          <td>{{date('d/m/Y', strtotime($details->date))}}</td>
+          <td>{{$details->articleClass->class_name}}</td>
+          <td>{{$details->hobby}}</td>
+          <td>{{$details->address}}</td>
           <td>
             <form method="get">
-            <button type="submit" formaction="{{ route('set_edit',['id'=>$list_user->id])}}" className="btn btn-success" >Sửa</button>&nbsp;
-            <button type="submit" formaction="{{ route('destroy',['id'=>$list_user->id])}}" className="btn btn-danger">xóa</button>
+            <button type="submit" formaction="{{ route('admin.set_edit',['id'=>$details->id])}}" className="btn btn-success" >Sửa</button>&nbsp;
+            <button type="submit" formaction="{{ route('admin.destroy',['id'=>$details->id])}}" className="btn btn-danger">xóa</button>
             </form>
           </td>
         </tr>
         @endforeach
       </tbody>
+     
     </table>
   </div>
 
@@ -68,13 +70,13 @@
         <div class="modal-header">
           <h4 class="modal-title">Thêm học sinh</h4>     
           <button type="button" class="close" data-dismiss="modal">&times;</button><br>
-          <form action="{{ route('set_add') }}" method="post">
+          <form action="{{ route('admin.set_add') }}" method="post">
             @csrf
          <div class="row">
             <div class="col-sm-9"> </div>
           <div class="col-sm-3 form-group">
             <label for="sel1">Lớp:</label>
-            <select class="form-control" name="class" id="sel1">
+            <select class="form-control" name="class_code" id="sel1">
               @foreach($list_class as $class)
               <option value="{{ $class->class_code }}">{{ $class->class_name }}</option>
               @endforeach
@@ -89,35 +91,49 @@
              <div class="col-sm-6">
                <div class="form-group">
                 <label for="usr">Họ tên:</label>
-                <input type="text" class="form-control" name="username" required id="usr">
+                <input type="text" class="form-control" value="{{old('username')}}" name="name"  id="usr">  
+                @error('username')
+                    <p class="text-danger">{{$message}}</p>
+                @enderror
               </div>
 
               <div class="form-group">
                 <label for="usr">Địa chỉ:</label>
-                <input type="text" class="form-control" required name="address" id="usr">
+                <input type="text" class="form-control" value="{{old('address')}}" name="address" id="usr">
+                @error('address')
+                    <p class="text-danger">{{$message}}</p>
+                @enderror
               </div>
               <div class="form-group">
                 <label for="comment">Sở thích:</label>
-                <textarea class="form-control" rows="5" required name="hobby" id="comment"></textarea>
+                <textarea class="form-control" rows="5" value="{{old('hobby')}}"  name="hobby" id="comment"></textarea>
+                @error('hobby')
+                <p class="text-danger">{{$message}}</p>
+                @enderror
               </div>
-
              </div>
 
              <div class="col-sm-6">
                <div class="form-group">
                   <label for="usr">Ngày sinh:</label>
-                  <input type="date" class="form-control" required name="date" id="usr">
+                  <input type="date" class="form-control" value="{{old('date')}}"  name="date" id="usr">
+                  @error('date')
+                  <p class="text-danger">{{$message}}</p>
+                  @enderror
                 </div>
 
                 <div class="form-check-inline">
                   <label class="form-check-label">
-                    <input type="radio" value="1" class="form-check-input" required name="gender"> Nam
+                    <input type="radio" value="1" class="form-check-input" name="gender"> Nam
                   </label>
                 </div>
                 <div class="form-check-inline">
                   <label class="form-check-label">
-                    <input type="radio" value="2" class="form-check-input" required name="gender"> Nữ
+                    <input type="radio" value="0" class="form-check-input"  name="gender"> Nữ
                   </label>
+                  @error('gender')
+                  <p class="text-danger">{{$message}}</p>
+                  @enderror
                 </div>
 </br>
                @foreach($list_subject as $subjects)
@@ -153,7 +169,7 @@
         
         <!-- Modal body -->
         <div class="modal-body">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="table_point">
     <thead>
       <tr>
         <th>Họ tên</th>
@@ -164,35 +180,38 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($list as $information)
+      @foreach($list_information as $list_scores)
          <tr>
-            <td>{{ $information->name}}</td>
-            @foreach($list_class as $compare_class)
-              @if($compare_class->class_code === $information->class_code)
-                  <td>{{ $compare_class->class_name }}</td>
-              @endif
-            @endforeach
-           @foreach($information->points as $list_point)
-                @foreach($list_subject as $ckeck)
-                  @if($ckeck->subject_code === $list_point->subject_code)
-                <td>{{ $list_point->number_point }}</td>
-                  @endif
-                @endforeach
-           @endforeach
+            <td>{{$list_scores->name}}</td>
+            <td>{{$list_scores->articleClass->class_name}}</td>
+            @foreach ($list_scores->articlePoints as $score)
+                <td>
+                  <input id="score_{{$score->id}}" value="{{$score->number_point}}" class="score" onchange="edit('{{$score->id}}')" style="border:2px;width: 27px;" >
+                </td>
+            @endforeach         
          </tr>
       @endforeach
     </tbody>
   </table>
         </div>
-        
         <!-- Modal footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
-        
       </div>
     </div>
   </div>
-  
 </body>
 </html>
+<script>
+function edit(id){
+  var point = $("#score_"+id).val();
+  $.get('{{route('admin.update_score')}}',{ "id":id ,"point":point },function(data){
+          if (data.status == 200) {
+            $("#table_point").load("{{ route('admin.index') }} #table_point");
+            alertify.success('Cập nhật thành công');
+          } 
+  });
+  
+}
+</script>

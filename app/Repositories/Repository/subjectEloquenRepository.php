@@ -1,16 +1,17 @@
 <?php
+
 namespace App\Repositories\Repository;
 
-use App\Models\Model_subjects;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\Frames\EloquentRepository;
-use App\Repositories\Repository\Interfaces\subjectRepositoryInterface;
+use App\Repositories\Repository\Interfaces\SubjectRepositoryInterface;
 
-class subjectEloquenRepository extends EloquentRepository implements subjectRepositoryInterface
+class SubjectEloquenRepository extends EloquentRepository implements SubjectRepositoryInterface
 {
+    //Connection Model
     public function getModel()
     {
-        return Model_subjects::class;
+        return Subject::class;
     }
 }
-

@@ -2,68 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Model_class;
-use App\Models\Model_users;
-use App\Models\Model_points;
 use Illuminate\Http\Request;
-use App\Models\Model_subjects;
-use App\Models\Model_informations;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Repositories\Repository\Interfaces\userRepositoryInterface;
-use App\Repositories\Repository\Interfaces\classRepositoryInterface;
-use App\Repositories\Repository\Interfaces\pointRepositoryInterface;
-use App\Repositories\Repository\Interfaces\subjectRepositoryInterface;
-use App\Repositories\Repository\Interfaces\informationRepositoryInterface;
+use Illuminate\Support\Facades\Hash;
+use App\Repositories\Repository\Interfaces\UserRepositoryInterface;
+use App\Repositories\Repository\Interfaces\ClassRepositoryInterface;
+use App\Repositories\Repository\Interfaces\PointRepositoryInterface;
+use App\Repositories\Repository\Interfaces\SubjectRepositoryInterface;
+use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
 
 class indexController extends Controller
 {
-    protected $_informations;
-    protected $_points;
-    protected $_subjects;
-    protected $_users;
-    protected $_class;
-     public function __construct(  informationRepositoryInterface $informationRepositoryInterface,
-                                   userRepositoryInterface $userRepositoryInterface,
-                                   classRepositoryInterface $classRepositoryInterface,
-                                   subjectRepositoryInterface $subjectRepositoryInterface,
-                                   pointRepositoryInterface $pointRepositoryInterface)
-     {
-         $this->_informations = $informationRepositoryInterface;
-         $this->_points = $pointRepositoryInterface;
-         $this->_users = $userRepositoryInterface;
-         $this->_class = $classRepositoryInterface;
-         $this->_subjects = $subjectRepositoryInterface;
+  protected $_informations;
+  protected $_points;
+  protected $_subjects;
+  protected $_users;
+  protected $_class;
 
-     }
-    public function index()
-    {
-       $user = $this->_informations->get_information(Auth::id());
-       $class = $this->_subjects->getAll();
-       $list_profile = $this->_informations->my_profile('student_code',$user->student_code);
-       $my_points = $this->_points->my_point($list_profile->student_code);
-      
-       return view('index',compact('list_profile','class','my_points'));
-     }
+  public function __construct(
+    InformationRepositoryInterface $InformationRepositoryInterface,
+    UserRepositoryInterface $UserRepositoryInterface,
+    ClassRepositoryInterface $ClassRepositoryInterface,
+    SubjectRepositoryInterface $SubjectRepositoryInterface,
+    PointRepositoryInterface $PointRepositoryInterface
+  ) {
+    $this->_informations = $InformationRepositoryInterface;
+    $this->_points = $PointRepositoryInterface;
+    $this->_users = $UserRepositoryInterface;
+    $this->_class = $ClassRepositoryInterface;
+    $this->_subjects = $SubjectRepositoryInterface;
+  }
 
-    public function login()
-    {
-      return view('login');
+  //Hiện thị trang người dùng
+  public function index()
+  {
+    $list_profile = $this->_informations->myProfile((int)Auth::id());
+    $list_subject = $this->_subjects->getAll();
+
+    return view('index', compact('list_profile', 'list_subject'));
+  }
+
+  //Hiện thị trang login
+  public function login()
+  {
+    return view('login');
+  }
+
+  //Check login
+  public function postLogin(Request $request)
+  {
+    if (Auth::attempt($this->_users->post_login($request))) {
+
+      return redirect()->route('page.index');
+    } else {
+
+      return redirect()->back()->with(['err' => 'Đăng nhập không thành công']);
     }
+  }
 
-     public function post_login(Request $request)
-     {
-        
-        if(Auth::attempt($this->_users->post_login())) {
-            return redirect()->route('page.index');
-        }else{
-             return redirect()->back()->with(['err'=>'Đăng nhập không thành công']);
-        }
-     }
+  //Logout
+  public function postLogout()
+  {
+    Auth::logout();
 
-     public function post_logout()
-     {
-        Auth::logout();
-        return redirect()->route('page.index');
-     }
-
+    return redirect()->route('page.index');
+  }
 }

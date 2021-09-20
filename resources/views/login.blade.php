@@ -15,7 +15,7 @@
   <div class="col-md-offset-4 col-md-4" id="box"> 
    <h2>Đăng nhập</h2> 
    <hr> 
-   <form class="form-horizontal" action="{{ route('post_login') }}" method="post" id="login_form"> 
+   <form class="form-horizontal" action="{{ route('students.post_login') }}" method="post" id="login_form"> 
    		@csrf
     <fieldset> 
        @if(Session::has('err'))

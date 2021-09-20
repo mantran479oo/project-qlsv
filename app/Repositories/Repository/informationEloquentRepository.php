@@ -1,67 +1,63 @@
 <?php
+
 namespace App\Repositories\Repository;
+
+use App\Models\Information;
 use Illuminate\Support\Carbon;
-use App\Models\Model_informations;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\Frames\EloquentRepository;
-use App\Repositories\Repository\Interfaces\informationRepositoryInterface;
+use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
 
-class informationEloquentRepository extends EloquentRepository implements informationRepositoryInterface
+class InformationEloquentRepository extends EloquentRepository implements InformationRepositoryInterface
 {
-
+    //Connection Model
     public function getModel()
     {
-        return Model_informations::class;
+        return Information::class;
     }
 
-    public function my_profile($column,$student_code){
-        return $this->_model::join('class','informations.class_code','=','class.class_code')
-                                             ->Where('informations.'.$column.'','=',$student_code)->first();
+    /**
+     * get product coverage
+     * @param int $id
+     * @return Collection
+     */
+    public function myProfile(int $id)
+    {
+        $student_code = $this->find($id)->student_code;
 
-    }
-
-    public function get_information($id){
-        return $this->_model::where('id_user','=',$id)->first();
-    }
-    public function admin_information(){
-           return $this->_model::with('points')->orderBy('name')->get() ;
-    }
-    public function list_user(){
-        return $this->_model::join('class','class.class_code','informations.class_code')->orderBy("name")->get();
+        return $this->_model::where('student_code', $student_code)->with('articleClass', 'articlePoints', 'articleSubject')->get();
     }
 
-    public function set_add($request,$id){
-        //random mã sinh viên
-        $pin = mt_rand(100, 9999)
-                . mt_rand(0, 99);
-        $code =Carbon::now()->month.str_shuffle($pin);
-
-         $value = [
-               'id_user' => $id,
-               'student_code' => $code,
-               'name' => $request->username,
-               'date' => $request->date,
-               'olds' => 15,
-               'class_code' => $request->class,
-               'hobby' => $request->hobby,
-               'gender' => $request->gender,
-               'address' => $request->address
-         ];
-        $create_information = $this->create($value);
-        return $create_information;
+    /**
+     * get product coverage
+     * @return Collection
+     */
+    public function listInformation()
+    {
+        return $this->_model::with('articleClass', 'articlePoints')->get();
     }
-    public function set_update($request){
+
+    /**
+     * get product coverage
+     * @param int $id
+     * @param int $student_code
+     * @param mixed $request
+     * @return  array
+     */
+    public function postInformation($request, int $id, int $student_code)
+    {
         $value = [
-            'name' => $request->username,
+            'id' => $id,
+            'student_code' => $student_code,
+            'name' => $request->name,
             'date' => $request->date,
             'olds' => 15,
-            'class_code' => $request->class,
+            'class_code' => $request->class_code,
             'hobby' => $request->hobby,
             'gender' => $request->gender,
             'address' => $request->address
         ];
-       return $value;
+        $create_information = $this->create($value);
+
+        return $create_information;
     }
 }
-
-

@@ -3,20 +3,33 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\Repository\userEloquentRepository;
-use App\Repositories\Repository\pointEloquentRepository;
-use App\Repositories\Repository\subjectEloquenRepository;
-use App\Repositories\Repository\informationEloquentRepository;
-use App\Repositories\Repository\classEloquenRepository;
 
-use App\Repositories\Repository\Interfaces\userRepositoryInterface;
-use App\Repositories\Repository\Interfaces\classRepositoryInterface;
-use App\Repositories\Repository\Interfaces\pointRepositoryInterface;
-use App\Repositories\Repository\Interfaces\subjectRepositoryInterface;
-use App\Repositories\Repository\Interfaces\informationRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array
+     */
+    public $bindings = [
+        \App\Repositories\Repository\Interfaces\InformationRepositoryInterface::class
+        => \App\Repositories\Repository\InformationEloquentRepository::class,
+
+        \App\Repositories\Repository\Interfaces\SubjectRepositoryInterface::class
+        => \App\Repositories\Repository\SubjectEloquenRepository::class,
+
+        \App\Repositories\Repository\Interfaces\PointRepositoryInterface::class
+        => \App\Repositories\Repository\PointEloquentRepository::class,
+
+        \App\Repositories\Repository\Interfaces\ClassRepositoryInterface::class
+        => \App\Repositories\Repository\ClassEloquenRepository::class,
+
+        \App\Repositories\Repository\Interfaces\UserRepositoryInterface::class
+        => \App\Repositories\Repository\UserEloquentRepository::class,
+    ];
+
+
     /**
      * Register any application services.
      *
@@ -24,11 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    $this->app->bind(informationRepositoryInterface::class,informationEloquentRepository::class,);
-    $this->app->bind(pointRepositoryInterface::class,pointEloquentRepository::class,);
-    $this->app->bind(userRepositoryInterface::class, userEloquentRepository::class,);
-    $this->app->bind(classRepositoryInterface::class,classEloquenRepository::class,);
-    $this->app->bind(subjectRepositoryInterface::class,subjectEloquenRepository::class,);
+        //
     }
 
     /**

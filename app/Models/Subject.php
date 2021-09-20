@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Model_subjects extends Model
+class Subject extends Model
 {
     use HasFactory;
+    //Connection table DB
     protected $table = 'subjects';
 }

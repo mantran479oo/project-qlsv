@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Repositories\Repository\Interfaces;
 
-interface userRepositoryInterface
+interface UserRepositoryInterface
 {
 
-   public function set_add($request);
+    public function postUser($request);
+    public function post_login($request);
 }

@@ -1,13 +1,11 @@
 <?php
+
 namespace App\Repositories\Repository\Interfaces;
 
-interface informationRepositoryInterface
+interface InformationRepositoryInterface
 {
 
-    public function get_Information($id);
-    public function my_profile($column,$student_code);
-    public function admin_information();
-    public function list_user();
-    public function set_add($request,$id);
-    public function set_update($request);
+    public function listInformation();
+    public function myProfile(int $id);
+    public function postInformation($request, int $id, int $student_code);
 }
