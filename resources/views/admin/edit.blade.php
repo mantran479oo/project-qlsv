@@ -35,13 +35,13 @@
 		        <div class="form-check"><br>
 		  <div class="form-check-inline">
 		  <label class="form-check-label">
-		    <input type="radio" class="form-check-input" value="1" @if($profile->gender === $_GENDER_MALE ) checked @endif name="gender">Nam
+		    <input type="radio" class="form-check-input" value="1" @if($profile->gender === 1 ) checked @endif name="gender">Nam
 		  </label>
 		</div>
 
 		<div class="form-check-inline">
 		  <label class="form-check-label">
-		    <input type="radio" class="form-check-input" value="0" @if($profile->gender != $_GENDER_MALE ) checked @endif  name="gender">Nữ
+		    <input type="radio" class="form-check-input" value="0" @if($profile->gender != 1 ) checked @endif  name="gender">Nữ
 		  </label>
 		</div>
    </div>
