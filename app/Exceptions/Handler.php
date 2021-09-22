@@ -38,4 +38,27 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    //  /**
+    //  * Report or log an exception.
+    //  *
+    //  * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+    //  *
+    //  * @param \Exception $exception
+    //  */
+    // public function report(Exception $exception): void
+    // {
+    //     parent::report($exception);
+    // }
+
+
+    //     /**
+    //  * Render an exception into an HTTP response.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  * @param \Exception               $exception
+    //  */
+    // public function render($request, Exception $exception)
+    // {
+    //     return parent::render($request, $exception);
+    // }
 }
