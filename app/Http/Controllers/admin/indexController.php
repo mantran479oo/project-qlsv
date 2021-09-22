@@ -17,6 +17,7 @@ use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
 
 class indexController extends Controller
 {
+
     /** 
      * @var InformationEloquenRepository
      */
@@ -121,8 +122,9 @@ class indexController extends Controller
         $editStudent = $this->_informations->myProfile($id);
         $listClass   = $this->_class->getAll();
         $listSubject = $this->_subjects->getAll();
+        $_GENDER_MALE    = Constant::_GENDER_MALE;
 
-        return view('admin.edit', compact('editStudent', 'listSubject', 'listClass'));
+        return view('admin.edit', compact('editStudent', 'listSubject', 'listClass','_GENDER_MALE'));
     }
 
     /**
