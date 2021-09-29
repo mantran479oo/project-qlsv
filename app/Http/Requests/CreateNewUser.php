@@ -27,7 +27,7 @@ class CreateNewUser extends FormRequest
             'name'    => 'required',
             'address' => 'required',
             'hobby'   => 'required',
-            'date'    => 'required|integer|between:0,10',
+            'date'    => 'required',
             'gender'  => 'required',
         ];
     }
@@ -41,8 +41,6 @@ class CreateNewUser extends FormRequest
         return [
             'name.required'    => 'Tên không được để trống',
             'address.required' => 'Địa chỉ không được để trống',
-            'date.integer'     => 'Yêu cầu nhập đúng số điểm',
-            'date.between'     => 'Số nhập điểm sai',
             'hobby.required'   => 'Sở thính không để trống',
             'date.required'    => 'Ngày sinh không để trống',
             'gender.required'  => 'Giới tính không để trống',

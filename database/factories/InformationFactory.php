@@ -22,7 +22,8 @@ class InformationFactory extends Factory
     public function definition()
     {
         return [
-            //
+           'updated_at' => '2021-09-19 15:07:00',
+           'created_at' => '2021-09-19 15:07:00',
         ];
     }
 }

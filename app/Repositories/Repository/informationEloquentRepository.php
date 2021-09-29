@@ -20,7 +20,7 @@ class InformationEloquentRepository extends EloquentRepository implements Inform
      * @param int $id
      * @return Collection
      */
-    public function myProfile(int $id)
+    public function myProfile($id)
     {
         $student_code = $this->find($id)->student_code;
 
@@ -36,27 +36,6 @@ class InformationEloquentRepository extends EloquentRepository implements Inform
         return $this->_model::with('articleClass', 'articlePoints')->get();
     }
 
-    /**
-     * get product coverage
-     * @param int $id
-     * @param int $student_code
-     * @param mixed $request
-     * @return  array
-     */
-    public function postInformation($request, int $id, int $student_code)
-    {
-        $value = [
-            'id' => $id,
-            'student_code' => $student_code,
-            'name' => $request->name,
-            'date' => $request->date,
-            'olds' => 15,
-            'class_code' => $request->class_code,
-            'hobby' => $request->hobby,
-            'gender' => $request->gender,
-            'address' => $request->address
-        ];
-
-        return  $this->create($value);
-    }
+ 
+    
 }

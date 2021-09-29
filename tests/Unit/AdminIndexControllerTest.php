@@ -3,11 +3,14 @@
 namespace Tests\Unit;
 
 use Mockery as m;
-use App\Models\Information;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Information;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Repositories\Repository\ClassEloquenRepository;
 use App\Repositories\Repository\UserEloquentRepository;
 use App\Repositories\Repository\SubjectEloquenRepository;
@@ -21,46 +24,43 @@ use App\Repositories\Repository\InformationEloquentRepository;
 class AdminIndexControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use WithoutMiddleware;
-    use WithFaker;
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
+    use DatabaseMigrations;
+
     protected $InformationRepository;
     protected $UserRepository;
     protected $ClassRepository;
     protected $SubjectRepository;
 
+    /**
+     * A basic unit test example.
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
-
         $this->InformationRepository = m::mock(InformationEloquentRepository::class);
-        $this->UserRepository = m::mock(UserEloquentRepository::class);
-        $this->ClassRepository = m::mock(ClassEloquenRepository::class);
-        $this->SubjectRepository = m::mock(SubjectEloquenRepository::class);
+        $this->UserRepository        = m::mock(UserEloquentRepository::class);
+        $this->ClassRepository       = m::mock(ClassEloquenRepository::class);
+        $this->SubjectRepository     = m::mock(SubjectEloquenRepository::class);
+    }
+
+    /**
+     * A basic unit test example.
+     *
+     * @return void
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        m::close();
     }
 
     /** @test */
     public function testCreate()
     {
-        $myProfile = factory(Information::class);
-    }
-
-    public function dataCreateUser()
-    {
-        return [
-            'id' => '2',
-            'student_code' => '123',
-            'name' => 'da',
-            'date' => '12',
-            'olds' => '12',
-            'class_code' => 'RM1',
-            'hobby' => 'da',
-            'gender' => 'nam',
-            'address' => 'sda'
-        ];
+        $this->InformationRepository->shouldReceive('create')->with([
+             
+        ]);
     }
 }

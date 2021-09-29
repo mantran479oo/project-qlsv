@@ -9,11 +9,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateNewUser;
-use App\Repositories\Repository\Interfaces\UserRepositoryInterface;
-use App\Repositories\Repository\Interfaces\ClassRepositoryInterface;
-use App\Repositories\Repository\Interfaces\PointRepositoryInterface;
-use App\Repositories\Repository\Interfaces\SubjectRepositoryInterface;
-use App\Repositories\Repository\Interfaces\InformationRepositoryInterface;
+use App\Services\ClassService;
+use App\Services\InformationService;
+use App\Services\PointService;
+use App\Services\SubjectService;
+use App\Services\UserService;
 
 class indexController extends Controller
 {
@@ -46,41 +46,37 @@ class indexController extends Controller
      * indexController constructor.
      */
     public function __construct(
-        InformationRepositoryInterface $InformationRepositoryInterface,
-        UserRepositoryInterface $UserRepositoryInterface,
-        ClassRepositoryInterface $ClassRepositoryInterface,
-        SubjectRepositoryInterface $SubjectRepositoryInterface,
-        PointRepositoryInterface $PointRepositoryInterface
+        InformationService $InformationService,
+        UserService $UserService,
+        ClassService $ClassService,
+        SubjectService $SubjectService,
+        PointService $PointService
     ) {
-        $this->_informations = $InformationRepositoryInterface;
-        $this->_points       = $PointRepositoryInterface;
-        $this->_users        = $UserRepositoryInterface;
-        $this->_class        = $ClassRepositoryInterface;
-        $this->_subjects     = $SubjectRepositoryInterface;
+        $this->_informations = $InformationService;
+        $this->_points       = $PointService;
+        $this->_users        = $UserService;
+        $this->_class        = $ClassService;
+        $this->_subjects     = $SubjectService;
     }
+
 
     public function admin()
     {
         $_GENDER_MALE    = Constant::_GENDER_MALE;
-        $listSubject     = $this->_subjects->getAll();
-        $listClass       = $this->_class->getAll();
-        $listInformation = $this->_informations->listInformation();
+        $listSubject     = $this->_subjects->showSubject();
+        $listClass       = $this->_class->showClass();
+        $listInformation = $this->_informations->showInformation();
 
         return view('admin.index', compact('listClass', 'listSubject', 'listInformation', '_GENDER_MALE'));
     }
 
-    //Thêm thông tin và tài khoản sinh viên
     public function setAdd(CreateNewUser $request)
     {
-        //Ramdom student_code
-        $pin  = mt_rand(100, 9999) . mt_rand(0, 99);
-        $code = Carbon::now()->month . str_shuffle($pin);
         DB::beginTransaction();
         try {
-            $point = $this->_points->postScore($request, (int) $code);
-            $this->_points->insert($point);
-            $user  = $this->_users->create($this->_users->postUser($request));
-            $this->_informations->postInformation($request, (int) $user->id, (int)$code);
+            $user        = $this->_users->postUser($request);
+            $information = $this->_informations->postInformation($request, $user->id);
+            $this->_points->postPoint($request, $information->student_code);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -90,18 +86,10 @@ class indexController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Xóa tài khoản sinh viên
-     * @param  int $id
-     */
-    public function destroy(int $id)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {
-            $destroy = $this->_informations->find($id);
-            $destroy->articlePoints()->get()->each(function ($value, $key) {
-                $value->delete();
-            });
             $this->_users->delete($id);
             DB::commit();
         } catch (Exception $e) {
@@ -112,30 +100,22 @@ class indexController extends Controller
         return redirect()->route('admin.index');
     }
 
-    /**
-     * Hiển thị form sửa thông tin sinh viên
-     * @param  int $id
-     */
-    public function setEdit(int $id)
+    public function setEdit($id)
     {
-        $editStudent = $this->_informations->myProfile($id);
-        $listClass   = $this->_class->getAll();
-        $listSubject = $this->_subjects->getAll();
+        $editStudent = $this->_informations->showProfile($id);
+        $listClass   = $this->_class->showClass();
+        $listSubject = $this->_subjects->showSubject();
 
         return view('admin.edit', compact('editStudent', 'listSubject', 'listClass'));
     }
 
-    /**
-     * Update thông tin sinh viên
-     * @param  int $id
-     * @request form
-     */
-    public function update(Request $request, int $id)
+    public function update(Request $request, $id)
     {
         DB::beginTransaction();
         try {
+            $update = $this->_users->postUser($request);
             $this->_informations->update($id, $request->toArray());
-            $this->_users->update($id, $this->_users->postUser($request));
+            $this->_users->update($id, $update);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -145,14 +125,9 @@ class indexController extends Controller
         return redirect()->route('admin.index');
     }
 
-    /**
-     * Update điểm sinh viên
-     *@param mixed $request
-     * return response
-     */
     public function postScore(Request $request)
     {
-        $id = $request->query('id');
+        $id = $request->id;
         $number_point = $request->query('point');
         DB::beginTransaction();
         try {

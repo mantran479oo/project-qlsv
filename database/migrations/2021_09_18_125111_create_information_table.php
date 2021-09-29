@@ -13,9 +13,17 @@ class CreateInformationTable extends Migration
      */
     public function up()
     {
-        Schema::create('information', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('informations', function (Blueprint $table) {
+            $table->integer('id');
+            $table->integer('student_code')->unsigned();
+            $table->string('name');
+            $table->date('date');
+            $table->string('olds');
+            $table->string('hobby');
+            $table->binary('gender');
+            $table->string('class_code');
+            $table->timestamps();     
+           
         });
     }
 
@@ -26,6 +34,6 @@ class CreateInformationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('information');
+        Schema::dropIfExists('informations');
     }
 }

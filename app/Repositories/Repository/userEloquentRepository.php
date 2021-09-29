@@ -17,25 +17,12 @@ class UserEloquentRepository extends EloquentRepository implements UserRepositor
 
     /**
      * get product coverage
-     * @param mixed $request
-     * @return array
-     */
-    public function postUser($request)
-    {
-        return $value = [
-            'username' => $request->name . '.' . $request->class_code,
-            'password' => trim($request->date),
-        ];
-    }
-
-    /**
-     * get product coverage
-     * @param mixed $request
+     * @param Request $request
      * @return array
      */
     public function post_login($request)
     {
-        return $user = [
+        return [
             'username' => $request['username'],
             'password' => trim($request['password']),
         ];
