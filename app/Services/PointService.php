@@ -11,7 +11,7 @@ class PointService
     /**
      * @var PointRepositoryInterface
      */
-    protected $PointRepository;
+    protected $pointRepository;
 
     /**
      * PointService constructor.
@@ -19,7 +19,7 @@ class PointService
      */
     public function __construct(PointRepositoryInterface $PointRepositoryInterface)
     {
-        $this->PointRepository = $PointRepositoryInterface;
+        $this->pointRepository = $PointRepositoryInterface;
     }
 
     /**
@@ -44,6 +44,6 @@ class PointService
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
-        return $this->PointRepository->insert($number_point);
+        return $this->pointRepository->insert($number_point);
     }
 }

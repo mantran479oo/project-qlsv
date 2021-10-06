@@ -6,7 +6,7 @@ use App\Repositories\Repository\Interfaces\ClassRepositoryInterface;
 
 class ClassService
 {
-    protected $ClassRepository;
+    protected $classRepository;
 
     /**
      * ClassService constructor.
@@ -14,7 +14,7 @@ class ClassService
      */
     public function __construct(ClassRepositoryInterface $ClassRepositoryInterface)
     {
-        $this->ClassRepository = $ClassRepositoryInterface;
+        $this->classRepository = $ClassRepositoryInterface;
     }
 
     /**
@@ -22,6 +22,6 @@ class ClassService
      */
     public function showClass()
     {
-        return $this->ClassRepository->getAll();
+        return $this->classRepository->getAll();
     }
 }

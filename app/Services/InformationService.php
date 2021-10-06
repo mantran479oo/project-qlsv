@@ -12,7 +12,7 @@ class InformationService
     protected $InformationRepository;
     public function __construct(InformationRepositoryInterface  $InformationRepositoryInterface)
     {
-        $this->InformationRepository = $InformationRepositoryInterface;
+        $this->informationRepository = $InformationRepositoryInterface;
     }
 
     /**
@@ -20,7 +20,7 @@ class InformationService
      */
     public function showInformation()
     {
-        return $this->InformationRepository->listInformation();
+        return $this->informationRepository->listInformation();
     }
 
     /**
@@ -50,7 +50,7 @@ class InformationService
             throw new Exception($e->getMessage());
         }
 
-        return $this->InformationRepository->create($value);
+        return $this->informationRepository->create($value);
     }
 
     /**
@@ -60,11 +60,11 @@ class InformationService
      */
     public function showProfile($id)
     {
-        return $this->InformationRepository->myProfile($id);
+        return $this->informationRepository->myProfile($id);
     }
 
     public function update($id , $request)
     {
-       return $this->InformationRepository->update($id,$request);
+       return $this->informationRepository->update($id,$request);
     }
 }

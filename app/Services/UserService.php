@@ -16,7 +16,7 @@ class UserService
      */
     public function __construct(UserRepositoryInterface $UserRepositoryInterface)
     {
-        $this->UserRepository = $UserRepositoryInterface;
+        $this->userRepository = $UserRepositoryInterface;
     }
 
     /**
@@ -36,7 +36,7 @@ class UserService
             throw new Exception($e->getMessage());
         }
 
-        return $this->UserRepository->create($value);
+        return $this->userRepository->create($value);
     }
 
     /**
@@ -45,11 +45,11 @@ class UserService
      */
     public function delete(int $id)
     {
-        return $this->UserRepository->delete($id);
+        return $this->userRepository->delete($id);
     }
 
     public function update($id , $request)
     {
-       return $this->UserRepository->update($id,$request);
+       return $this->userRepository->update($id,$request);
     }
 }

@@ -15,13 +15,13 @@ class SubjectService
      */
     public function __construct(SubjectRepositoryInterface $SubjectRepositoryInterface)
     {
-        $this->SubjectRepository = $SubjectRepositoryInterface;
+        $this->subjectRepository = $SubjectRepositoryInterface;
     }
 
     /**
      * @return mixed
      */
     public function showSubject(){
-        return $this->SubjectRepository->getAll();
+        return $this->subjectRepository->getAll();
     }
 }
