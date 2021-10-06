@@ -16,11 +16,10 @@ class InformationEloquentRepository extends EloquentRepository implements Inform
     }
 
     /**
-     * get product coverage
      * @param int $id
      * @return Collection
      */
-    public function myProfile($id)
+    public function myProfile(int $id)
     {
         $student_code = $this->find($id)->student_code;
 
@@ -36,6 +35,5 @@ class InformationEloquentRepository extends EloquentRepository implements Inform
         return $this->_model::with('articleClass', 'articlePoints')->get();
     }
 
- 
-    
+
 }

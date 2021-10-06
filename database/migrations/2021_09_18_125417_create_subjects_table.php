@@ -17,7 +17,7 @@ class CreateSubjectsTable extends Migration
             $table->string('subject_code')->unsigned();
             $table->string('subject_title');
             $table->timestamps();
-           
+
         });
     }
 

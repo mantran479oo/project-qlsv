@@ -8,10 +8,19 @@ use App\Repositories\Repository\Interfaces\SubjectRepositoryInterface;
 class SubjectService
 {
     protected $SubjectRepository;
-    public function __construct( SubjectRepositoryInterface $SubjectRepositoryInterface)
+
+    /**
+     * SubjectService constructor.
+     * @param SubjectRepositoryInterface $SubjectRepositoryInterface
+     */
+    public function __construct(SubjectRepositoryInterface $SubjectRepositoryInterface)
     {
         $this->SubjectRepository = $SubjectRepositoryInterface;
     }
+
+    /**
+     * @return mixed
+     */
     public function showSubject(){
         return $this->SubjectRepository->getAll();
     }

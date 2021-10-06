@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 Route::apiResource('profile', 'Api\InformationController');
+Route::apiResource('user','Api\UserController')->only('store','update','destroy');

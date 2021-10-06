@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\UserService;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    /**  
+     * @var UserEloquentRepository 
+     */
+    protected $_users;
+
+    public function __construct( UserService $UserService )
+    {
+        $this->_users = $UserService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,7 +36,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->_users->postUser($request);
+
+        return 204;
     }
 
     /**

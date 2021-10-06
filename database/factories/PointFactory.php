@@ -2,19 +2,18 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use App\Models\Information;
+use App\Models\Point;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class InformationFactory extends Factory
+class PointFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Information::class;
+    protected $model = Point::class;
 
     /**
      * Define the model's default state.
@@ -24,13 +23,9 @@ class InformationFactory extends Factory
     public function definition()
     {
         return [
-            'id' => 1,
-            'name' => "sadas",
-            'address' => Str::random(12),
-            'hobby' => "hat",
-            'date' => Carbon::now()->format('d-m-Y'),
-            'class_code' => Str::random(3),
-            'gender' => 1,
+            'student_code' => random_int(1,5),
+            'number_point' => 1,
+            'subject_code' => Str::random(4),
            'updated_at' => '2021-09-19 15:07:00',
            'created_at' => '2021-09-19 15:07:00',
         ];

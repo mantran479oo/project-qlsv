@@ -5,7 +5,6 @@ namespace App\Http\Controllers\admin;
 use App\Constants\Constant;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateNewUser;
@@ -17,80 +16,95 @@ use App\Services\UserService;
 
 class indexController extends Controller
 {
-    /** 
-     * @var InformationEloquenRepository
-     */
-    protected $_informations;
-
-    /** 
-     * @var PointEloquentRepository 
-     */
-    protected $_points;
-
-    /**  
-     * @var SubjectEloquentRepository 
-     */
-    protected $_subjects;
-
-    /**  
-     * @var UserEloquentRepository 
-     */
-    protected $_users;
 
     /**
-     * @var ClassEloquentRepository 
+     * @var InformationService
      */
-    protected $_class;
+    protected $informations;
+
+    /**
+     * @var PointService
+     */
+    protected $points;
+
+    /**
+     * @var SubjectService
+     */
+    protected $subjects;
+
+    /**
+     * @var UserService
+     */
+    protected $users;
+
+    /**
+     * @var ClassService
+     */
+    protected $class;
 
     /**
      * indexController constructor.
+     * @param InformationService $informationService
+     * @param UserService $userService
+     * @param ClassService $classService
+     * @param SubjectService $subjectService
+     * @param PointService $pointService
      */
     public function __construct(
-        InformationService $InformationService,
-        UserService $UserService,
-        ClassService $ClassService,
-        SubjectService $SubjectService,
-        PointService $PointService
+        InformationService $informationService,
+        UserService $userService,
+        ClassService $classService,
+        SubjectService $subjectService,
+        PointService $pointService
     ) {
-        $this->_informations = $InformationService;
-        $this->_points       = $PointService;
-        $this->_users        = $UserService;
-        $this->_class        = $ClassService;
-        $this->_subjects     = $SubjectService;
+        $this->informations = $informationService;
+        $this->points       = $pointService;
+        $this->users        = $userService;
+        $this->class        = $classService;
+        $this->subjects     = $subjectService;
     }
 
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function admin()
     {
-        $_GENDER_MALE    = Constant::_GENDER_MALE;
-        $listSubject     = $this->_subjects->showSubject();
-        $listClass       = $this->_class->showClass();
-        $listInformation = $this->_informations->showInformation();
+        $GENDERMALE      = Constant::GENDER_MALE;
+        $listSubject     = $this->subjects->showSubject();
+        $listClass       = $this->class->showClass();
+        $listInformation = $this->informations->showInformation();
 
-        return view('admin.index', compact('listClass', 'listSubject', 'listInformation', '_GENDER_MALE'));
+        return view('admin.index', compact('listClass', 'listSubject', 'listInformation', 'GENDERMALE'));
     }
 
+
+    /**
+     * @param CreateNewUser $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws Exception
+     */
     public function setAdd(CreateNewUser $request)
     {
         DB::beginTransaction();
-        try {
-            $user        = $this->_users->postUser($request);
-            $information = $this->_informations->postInformation($request, $user->id);
-            $this->_points->postPoint($request, $information->student_code);
+            $user        = $this->users->postUser($request);
+            $information = $this->informations->postInformation($request, $user->id);
+            $this->points->postPoint($request, $information->studentcode);
             DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception($e->getMessage());
-        }
 
         return redirect()->back();
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws Exception
+     */
     public function destroy($id)
     {
         DB::beginTransaction();
         try {
-            $this->_users->delete($id);
+            $this->users->delete($id);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -100,38 +114,48 @@ class indexController extends Controller
         return redirect()->route('admin.index');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function setEdit($id)
     {
-        $editStudent = $this->_informations->showProfile($id);
-        $listClass   = $this->_class->showClass();
-        $listSubject = $this->_subjects->showSubject();
+        $editStudent = $this->informations->showProfile($id);
+        $listClass   = $this->class->showClass();
+        $listSubject = $this->subjects->showSubject();
 
         return view('admin.edit', compact('editStudent', 'listSubject', 'listClass'));
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws Exception
+     */
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
-        try {
-            $update = $this->_users->postUser($request);
-            $this->_informations->update($id, $request->toArray());
-            $this->_users->update($id, $update);
+            $update = $this->users->postUser($request);
+            $this->informations->update($id, $request->toArray());
+            $this->users->update($id, $update->toArray());
             DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception($e->getMessage());
-        }
 
         return redirect()->route('admin.index');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws Exception
+     */
     public function postScore(Request $request)
     {
         $id = $request->id;
-        $number_point = $request->query('point');
+        $numberpoint = $request->query('point');
         DB::beginTransaction();
         try {
-            $this->_points->update($id, $this->_points->updatePoint($number_point));
+            $this->points->update($id, $this->points->updatePoint($numberpoint));
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

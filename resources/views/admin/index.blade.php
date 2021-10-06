@@ -37,7 +37,7 @@
       <tbody>
        @foreach($listInformation as $details)
         @php
-        $gender = $details->gender === $_GENDER_MALE ? 'Nam' :'Nữ'; 
+        $gender = $details->gender === $GENDERMALE ? 'Nam' :'Nữ'; 
         @endphp 
         <tr>
           <td>{{$details->student_code}}</td>

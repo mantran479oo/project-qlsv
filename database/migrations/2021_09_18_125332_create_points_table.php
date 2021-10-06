@@ -16,7 +16,7 @@ class CreatePointsTable extends Migration
         Schema::create('points', function (Blueprint $table) {
             $table->id();
             $table->integer('student_code');
-            $table->integer('number_code');
+            $table->integer('number_point');
             $table->string('subject_code');
             $table->timestamps();
         });

@@ -13,11 +13,11 @@ class CreateClassRoomsTable extends Migration
      */
     public function up()
     {
-        Schema::create('class_rooms', function (Blueprint $table) {
+        Schema::create('classroom', function (Blueprint $table) {
             $table->string('class_code')->unsigned();
             $table->string('class_name');
             $table->timestamps();
-           
+
         });
     }
 

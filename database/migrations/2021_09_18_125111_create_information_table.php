@@ -14,16 +14,17 @@ class CreateInformationTable extends Migration
     public function up()
     {
         Schema::create('informations', function (Blueprint $table) {
-            $table->integer('id');
-            $table->integer('student_code')->unsigned();
-            $table->string('name');
-            $table->date('date');
-            $table->string('olds');
-            $table->string('hobby');
-            $table->binary('gender');
-            $table->string('class_code');
-            $table->timestamps();     
-           
+            $table->integer('id')->nullable();
+            $table->integer('student_code')->unsigned()->nullable();
+            $table->string('name')->nullable();
+            $table->date('date')->nullable();
+            $table->string('olds')->nullable();
+            $table->string('hobby')->nullable();
+            $table->binary('address')->nullable();
+            $table->binary('gender')->nullable();
+            $table->string('class_code')->nullable();
+            $table->timestamps();
+
         });
     }
 

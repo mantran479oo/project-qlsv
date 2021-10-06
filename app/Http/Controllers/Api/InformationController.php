@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Information;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\InformationService;
 
 
 class InformationController extends Controller
@@ -12,8 +12,13 @@ class InformationController extends Controller
     /** 
      * @var InformationEloquenRepository
      */
-    protected $_informations;
+    protected $informations;
 
+    public function __construct(
+        InformationService $informationService
+    ) {
+        $this->informations = $informationService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,18 +26,23 @@ class InformationController extends Controller
      */
     public function index()
     {
-        return Information::all();
+        return [
+            'listInformation ' => $this->informations->showInformation()
+        ];
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        return Information::create($request);
+        $this->informations->postInformation($request, $id);
+
+        return 204;
     }
 
     /**
@@ -43,7 +53,7 @@ class InformationController extends Controller
      */
     public function show($id)
     {
-        return Information::findOrFail($id);
+        return $this->informations->findOrFail($id);
     }
 
     /**
@@ -55,7 +65,7 @@ class InformationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return Information::findOrFail($id)->update($request);
+        return $this->informations->findOrFail($id)->update($request);
     }
 
     /**
@@ -66,8 +76,8 @@ class InformationController extends Controller
      */
     public function destroy($id)
     {
-        Information::findOrFail($id)->delete();
-        
+        $this->informations->findOrFail($id)->delete();
+
         return 204;
     }
 }

@@ -22,7 +22,7 @@ class PointEloquentRepository extends EloquentRepository implements PointReposit
      * @param int $number_point
      * @return array
      */
-    public function updatePoint($number_point)
+    public function updatePoint(int $number_point)
     {
         return ['number_point' => $number_point];
     }

@@ -4,5 +4,5 @@ namespace App\Constants;
 
 class Constant
 {
-    const _GENDER_MALE = 1;
+    const GENDER_MALE = 1;
 }

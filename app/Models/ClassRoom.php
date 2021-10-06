@@ -9,5 +9,5 @@ class ClassRoom extends Model
 {
     use HasFactory;
     //Connection table DB
-    protected $table = 'class_room';
+    protected $table = 'classroom';
 }

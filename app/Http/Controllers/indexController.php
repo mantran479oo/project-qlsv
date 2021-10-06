@@ -14,62 +14,77 @@ use Illuminate\Support\Facades\Hash;
 
 class indexController extends Controller
 {
-    /** 
-     * @var InformationEloquenRepository
-     */
-    protected $_informations;
-
-    /** 
-     * @var PointEloquentRepository 
-     */
-    protected $_points;
-
-    /**  
-     * @var SubjectEloquentRepository 
-     */
-    protected $_subjects;
-
-    /**  
-     * @var UserEloquentRepository 
-     */
-    protected $_users;
 
     /**
-     * @var ClassEloquentRepository 
+     * @var InformationService
      */
-    protected $_class;
+    protected $informations;
+
+    /**
+     * @var PointService
+     */
+    protected $points;
+
+    /**
+     * @var SubjectService
+     */
+    protected $subjects;
+
+    /**
+     * @var UserService
+     */
+    protected $users;
+
+    /**
+     * @var ClassService
+     */
+    protected $class;
 
     /**
      * indexController constructor.
+     * @param InformationService $informationService
+     * @param UserService $userService
+     * @param ClassService $classService
+     * @param SubjectService $subjectService
+     * @param PointService $pointService
      */
     public function __construct(
-        InformationService $InformationService,
-        UserService $UserService,
-        ClassService $ClassService,
-        SubjectService $SubjectService,
-        PointService $PointService
+        InformationService $informationService,
+        UserService $userService,
+        ClassService $classService,
+        SubjectService $subjectService,
+        PointService $pointService
     ) {
-        $this->_informations = $InformationService;
-        $this->_points       = $PointService;
-        $this->_users        = $UserService;
-        $this->_class        = $ClassService;
-        $this->_subjects     = $SubjectService;
+        $this->informations = $informationService;
+        $this->points       = $pointService;
+        $this->users        = $userService;
+        $this->class        = $classService;
+        $this->subjects     = $subjectService;
     }
 
-  public function index()
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index()
   {
-    $listProfile = $this->_informations->showProfile(Auth::id());
-    $listSubject = $this->_subjects->getAll();
+    $listProfile = $this->informations->showProfile(8);
+    $listSubject = $this->subjects->showSubject();
 
     return view('index', compact('listProfile', 'listSubject'));
   }
 
-  public function login()
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function login()
   {
     return view('login');
   }
 
-  public function postLogout()
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postLogout()
   {
     Auth::logout();
 

@@ -3,17 +3,16 @@
 namespace Tests\Unit;
 
 use Mockery as m;
+use Carbon\Carbon;
 use Tests\TestCase;
-use App\Models\User;
+use App\Models\Point;
 use App\Models\Information;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Repositories\Repository\ClassEloquenRepository;
-use App\Repositories\Repository\UserEloquentRepository;
-use App\Repositories\Repository\SubjectEloquenRepository;
 use App\Repositories\Repository\InformationEloquentRepository;
 
 /**
@@ -24,12 +23,10 @@ use App\Repositories\Repository\InformationEloquentRepository;
 class AdminIndexControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use DatabaseMigrations;
+    use WithoutMiddleware;
 
     protected $InformationRepository;
-    protected $UserRepository;
     protected $ClassRepository;
-    protected $SubjectRepository;
 
     /**
      * A basic unit test example.
@@ -40,9 +37,7 @@ class AdminIndexControllerTest extends TestCase
     {
         parent::setUp();
         $this->InformationRepository = m::mock(InformationEloquentRepository::class);
-        $this->UserRepository        = m::mock(UserEloquentRepository::class);
         $this->ClassRepository       = m::mock(ClassEloquenRepository::class);
-        $this->SubjectRepository     = m::mock(SubjectEloquenRepository::class);
     }
 
     /**
@@ -56,11 +51,67 @@ class AdminIndexControllerTest extends TestCase
         m::close();
     }
 
-    /** @test */
-    public function testCreate()
+    /** @test
+     *  @covers ::create
+     */
+    public function a_information_create()
     {
-        $this->InformationRepository->shouldReceive('create')->with([
-             
+        $params = $this->data();
+        $response = $this->post('admin/add', $params);
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('informations', $params);
+    }
+
+    /** @test 
+     *  @covers ::edit
+     */
+    public function a_information_edit()
+    {
+        $this->withoutExceptionHandling();
+        $informationMock = Information::factory()->create();
+        $id = $informationMock->id;
+        $this->InformationRepository->shouldReceive('myProfile')->with($id)->andReturn($informationMock);
+        $response = $this->get('admin/edit/' . $id);
+        $response->assertStatus(200);
+        $this->assertEquals($response->baseResponse->isSuccessful(), true);
+    }
+
+    /** @test
+     *  @covers ::delete
+     */
+    public function a_information_destroy()
+    {
+        $informationMock = Information::factory()->create();
+        $response = $this->get("admin/remove/$informationMock->id");
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertDatabaseMissing('informations', ['created_at' => null, 'id' => $informationMock->id]);
+    }
+
+    /** @test 
+     *  @covers ::update
+     */
+    public function update()
+    {
+        $this->withoutExceptionHandling();
+        $informationMock = Information::factory()->create();
+        $this->InformationRepository->shouldReceive('update')->with($informationMock->id)->andReturnTrue();
+        $response = $this->post("admin/update/$informationMock->id", [
+            'name' => 'aaaa',
         ]);
+        $response->assertStatus(302);
+        $this->assertInstanceOf(RedirectResponse::class, $response->baseResponse);
+    }
+
+    public function data()
+    {
+        return [
+            'id' => 1,
+            'name' => "sadas",
+            'address' => Str::random(12),
+            'hobby' => "hat",
+            'date' => Carbon::now()->format('d-m-Y'),
+            'gender' => 1
+
+        ];
     }
 }
