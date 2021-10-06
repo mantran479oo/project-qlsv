@@ -25,8 +25,8 @@ class AdminIndexControllerTest extends TestCase
     use RefreshDatabase;
     use WithoutMiddleware;
 
-    protected $InformationRepository;
-    protected $ClassRepository;
+    protected $informationRepository;
+    protected $classRepository;
 
     /**
      * A basic unit test example.
@@ -36,8 +36,8 @@ class AdminIndexControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->InformationRepository = m::mock(InformationEloquentRepository::class);
-        $this->ClassRepository       = m::mock(ClassEloquenRepository::class);
+        $this->informationRepository = m::mock(InformationEloquentRepository::class);
+        $this->classRepository       = m::mock(ClassEloquenRepository::class);
     }
 
     /**
@@ -56,7 +56,7 @@ class AdminIndexControllerTest extends TestCase
      */
     public function a_information_create()
     {
-        $params = $this->data();
+        $params   = $this->data();
         $response = $this->post('admin/add', $params);
         $response->assertStatus(302);
         $this->assertDatabaseHas('informations', $params);
@@ -70,7 +70,7 @@ class AdminIndexControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $informationMock = Information::factory()->create();
         $id = $informationMock->id;
-        $this->InformationRepository->shouldReceive('myProfile')->with($id)->andReturn($informationMock);
+        $this->informationRepository->shouldReceive('myProfile')->with($id)->andReturn($informationMock);
         $response = $this->get('admin/edit/' . $id);
         $response->assertStatus(200);
         $this->assertEquals($response->baseResponse->isSuccessful(), true);
@@ -94,7 +94,7 @@ class AdminIndexControllerTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $informationMock = Information::factory()->create();
-        $this->InformationRepository->shouldReceive('update')->with($informationMock->id)->andReturnTrue();
+        $this->informationRepository->shouldReceive('update')->with($informationMock->id)->andReturnTrue();
         $response = $this->post("admin/update/$informationMock->id", [
             'name' => 'aaaa',
         ]);
